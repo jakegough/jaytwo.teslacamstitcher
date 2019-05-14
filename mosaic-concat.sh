@@ -6,7 +6,9 @@ clip_timestamp_raw=$(basename "$in_dir")
 clip_timestamp_readable_date=$(echo $clip_timestamp_raw | sed 's/_/ /g' | awk '{print $1}')
 clip_timestamp_readable_time=$(echo $clip_timestamp_raw | sed 's/[_]/ /g' | awk '{print $2}' | sed 's/[-]/:/g')
 clip_timestamp_readable_datetime=${clip_timestamp_readable_date}T${clip_timestamp_readable_time}
-clip_timestamp_without_seconds=$(date --date "${clip_timestamp_readable_datetime}" +"%Y-%m-%dT%H:%M")
+clip_timestamp_without_seconds=$(date --date "$clip_timestamp_readable_datetime" +"%Y-%m-%dT%H:%M")
+
+clip_start_time_unixtime=$(date -u --date "$clip_timestamp_readable_datetime 10 minutes ago" +"%s")
 
 clip_timestamp_minus_0=$clip_timestamp_without_seconds
 clip_timestamp_minus_1=$(date --date "$clip_timestamp_without_seconds 1 minute ago" +'%Y-%m-%dT%H:%M')
@@ -21,7 +23,6 @@ clip_timestamp_minus_9=$(date --date "$clip_timestamp_without_seconds 9 minutes 
 clip_timestamp_minus_10=$(date --date "$clip_timestamp_without_seconds 10 minutes ago" +'%Y-%m-%dT%H:%M')
 
 clip_date_format="%Y-%m-%d_%H-%M"
-clip_start_time_unixtime=$(date -u --date "$clip_timestamp_minus_10" +"%s")
 clip_file_date_1=$(date --date "$clip_timestamp_minus_10" +"$clip_date_format")
 clip_file_date_2=$(date --date "$clip_timestamp_minus_9" +"$clip_date_format")
 clip_file_date_3=$(date --date "$clip_timestamp_minus_8" +"$clip_date_format")
@@ -89,9 +90,9 @@ left_file11="$base_file11-left_repeater.mp4"
 center_file11="$base_file11-front.mp4"
 right_file11="$base_file11-right_repeater.mp4"
 
-output_file="mosaic-concat.mp4"
+output_file="$clip_timestamp_raw.mp4"
 
-x264_preset="ultrafast" # ultrafast, superfast, veryfast, faster, fast, medium, slow, slower, veryslow, placebo
+x264_preset="fast" # ultrafast, superfast, veryfast, faster, fast, medium, slow, slower, veryslow, placebo
 x264_tune="zerolatency" # film, animation, grain, stillimage, psnr, ssim, fastdecode, zerolatency
 x264_crf=23 # 0-51: where 0 is lossless, 23 is default, and 51 is worst possible
 out_size="640x480"
@@ -170,10 +171,10 @@ ffmpeg \
     [left1][left2][left3][left4][left5][left6][left7][left8][left9][left10][left11] concat=n=11 [left]; \
     [center1][center2][center3][center4][center5][center6][center7][center8][center9][center10][center11] concat=n=11 [center]; \
     [right1][right2][right3][right4][right5][right6][right7][right8][right9][right10][right11] concat=n=11 [right]; \
-		[base][center] overlay=shortest=1:x=0   [tmp1]; \
-		[tmp1][right]  overlay=shortest=1:y=h     [tmp2]; \
-    [tmp2][left]   overlay=shortest=1:x=w:y=h [tmp3]; \
-    [tmp3] drawtext=\
+		[base][center] overlay=shortest=1:x=0   [mosaic_c]; \
+		[mosaic_c][right]  overlay=shortest=1:y=h     [mosaic_cr]; \
+    [mosaic_cr][left]   overlay=shortest=1:x=w:y=h [mosaic_crl]; \
+    [mosaic_crl] drawtext=\
       fontfile=Roboto-Regular.ttf: \
       text='%{pts\:gmtime\:$clip_start_time_unixtime\:%Y-%m-%dT%H\\\\\:%M\\\\\:%S}': \
       fontcolor=white: \
@@ -182,7 +183,7 @@ ffmpeg \
       boxcolor=black@0.5: \
       boxborderw=5: \
       x=(w/2)+((w/2)-text_w)/2: \
-      y=((h/2)-text_h)/2 [tmp4]; \
-    [tmp4] setpts=$pts_scale*PTS
+      y=((h/2)-text_h)/2 [mosaic_crlt]; \
+    [mosaic_crlt_pts] setpts=$pts_scale*PTS
 	" \
 	-c:v libx264 -preset $x264_preset -tune $x264_tune -crf $x264_crf "$output_file"
