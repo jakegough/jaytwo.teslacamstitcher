@@ -24,7 +24,7 @@ x264_tune="zerolatency" # film, animation, grain, stillimage, psnr, ssim, fastde
 x264_crf=23 # 0-51: where 0 is lossless, 23 is default, and 51 is worst possible
 out_size="640x480"
 scale="320x240"
-pts_scale="0.0625" #2.0 means half speed, 0.5 means double speed
+pts_scale="0.04" #2.0 means half speed, 0.5 means double speed
 output_file="$folder_timestamp_raw.mp4"
 
 input_files_list=""
@@ -69,5 +69,6 @@ ffmpeg \
       y=((h/2)-text_h)/2 [mosaic_crlt]; \
     [mosaic_crlt] setpts=$pts_scale*PTS
 	" \
+  -r 25 \
   -y \
 	-c:v libx264 -preset $x264_preset -tune $x264_tune -crf $x264_crf "$output_file"
