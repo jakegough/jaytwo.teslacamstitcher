@@ -47,6 +47,7 @@ for ((i=0;i<$front_clips_count;i++)) do filter_concat_streams_center="$filter_co
 filter_concat_streams_center="$filter_concat_streams_center concat=n=$front_clips_count [center];"
 
 ffmpeg \
+  -c:v h264_mmal \
 	$input_files_list \
 	-filter_complex "\
 		color=size=$out_size:color=black [base]; \
@@ -71,4 +72,4 @@ ffmpeg \
 	" \
   -r 25 \
   -y \
-	-c:v libx264 -preset $x264_preset -tune $x264_tune -crf $x264_crf "$output_file"
+	-c:v h264_omx -preset $x264_preset -tune $x264_tune -crf $x264_crf "$output_file"
