@@ -5,22 +5,20 @@
 #https://www.reddit.com/r/raspberry_pi/comments/5677qw/hardware_accelerated_x264_encoding_with_ffmpeg/
 #https://potluru.wordpress.com/2016/06/26/compile-ffmpeg-for-raspberry-pi-3/
 
-pushd ~
-
+cd ~/
 rm -rf x264
 git clone --depth 1 http://git.videolan.org/git/x264
 
-pushd x264
+cd x264
 ./configure --host=arm-unknown-linux-gnueabi --enable-static --disable-opencl
 make -j4
 sudo make install
-popd
-popd
 
+cd ~/
 rm -rf ffmpeg
 git clone --depth 1 https://github.com/ffmpeg/ffmpeg
 
-pushd ffmpeg
+cd ffmpeg
 sudo apt-get update
 sudo apt-get install \
   autoconf \
@@ -54,5 +52,3 @@ sudo apt-get install \
   --enable-libfreetype
 make -j4
 sudo make install
-popd
-popd
