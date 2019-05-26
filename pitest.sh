@@ -8,7 +8,7 @@ output_file="2019-05-13_21-19-04.mp4"
 ffmpeg \
   -c:v h264_mmal \
 	-i /home/pi/TeslaCam/SavedClips/2019-05-13_21-19-04/2019-05-13_21-09-left_repeater.mp4 \
-  -i /home/pi/TeslaCam/SavedClips/2019-05-13_21-19-04/2019-05-13_21-09-front.mp4 \  
+  -i /home/pi/TeslaCam/SavedClips/2019-05-13_21-19-04/2019-05-13_21-09-front.mp4 \
   -i /home/pi/TeslaCam/SavedClips/2019-05-13_21-19-04/2019-05-13_21-09-right_repeater.mp4 \
 	-filter_complex "\
 		color=size=$out_size:color=black [base]; \
