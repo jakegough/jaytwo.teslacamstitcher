@@ -72,4 +72,4 @@ ffmpeg \
 	" \
   -r 25 \
   -y \
-	-c:v h264_omx -preset $x264_preset -tune $x264_tune -crf $x264_crf "$output_file"
+	-c:v h264_omx "$output_file"
