@@ -1,5 +1,5 @@
 #!/bin/sh
--e
+set -ex
 
 #http://jollejolles.com/installing-ffmpeg-with-h264-support-on-raspberry-pi/
 #https://www.reddit.com/r/raspberry_pi/comments/5677qw/hardware_accelerated_x264_encoding_with_ffmpeg/
