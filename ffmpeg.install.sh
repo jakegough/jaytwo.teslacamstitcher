@@ -18,7 +18,7 @@ popd
 popd
 
 rm -rf ffmpeg
-git clone https://github.com/ffmpeg/ffmpeg --depth
+git clone --depth 1 https://github.com/ffmpeg/ffmpeg
 
 pushd ffmpeg
 sudo apt-get update
