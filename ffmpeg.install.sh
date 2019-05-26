@@ -1,27 +1,27 @@
+#!/bin/sh
+-e
+
 #http://jollejolles.com/installing-ffmpeg-with-h264-support-on-raspberry-pi/
 #https://www.reddit.com/r/raspberry_pi/comments/5677qw/hardware_accelerated_x264_encoding_with_ffmpeg/
 #https://potluru.wordpress.com/2016/06/26/compile-ffmpeg-for-raspberry-pi-3/
 
-cd ~
+pushd ~
 
+rm -rf x264
 git clone --depth 1 http://git.videolan.org/git/x264
 
-cd ~/x264
-
+pushd x264
 ./configure --host=arm-unknown-linux-gnueabi --enable-static --disable-opencl
-
 make -j4
-
 sudo make install
+popd
+popd
 
-cd ~
-
+rm -rf ffmpeg
 git clone https://github.com/ffmpeg/ffmpeg --depth
 
-cd ~/ffmpeg
-
+pushd ffmpeg
 sudo apt-get update
-
 sudo apt-get install \
   autoconf \
   automake \
@@ -52,7 +52,7 @@ sudo apt-get install \
   --enable-omx-rpi \
   --enable-libx264 \
   --enable-libfreetype
-
 make -j4
-
 sudo make install
+popd
+popd
